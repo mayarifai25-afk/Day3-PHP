@@ -16,14 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Passwords do not match!");
     }
 
-    // 1. إدخال المستخدم بحالة pending
+  
     $hash = password_hash($pass, PASSWORD_DEFAULT);
     $stmt = $pdo->prepare("INSERT INTO users (full_name, email, password_hash, role, status, email_verified)
                            VALUES (:n, :e, :h, 'user', 'pending', 0)");
     $stmt->execute([':n' => $fullName, ':e' => $email, ':h' => $hash]);
     $userId = (int)$pdo->lastInsertId();
 
-    // 2. توليد وتخزين الرمز
     $otp     = generate_numeric_otp(6);
     $otpHash = hash_otp($otp);
     $expiry  = otp_expiry(10);
@@ -34,13 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                               WHERE user_id = :id");
     $stmtOtp->execute([':oh' => $otpHash, ':ex' => $expiry, ':ls' => $now, ':id' => $userId]);
 
-    // 3. إرسال الإيميل (وطباعة الرمز مؤقتاً على الشاشة للتجربة)
     $subject = "Verify your email - Trading POS";
     $body    = "Hi $fullName,\n\nYour verification code is: $otp\nThis code expires in 10 minutes.";
     $headers = "From: no-reply@tradingpos.com";
     @mail($email, $subject, $body, $headers);
 
-    // طباعة الرمز على الشاشة مؤقتاً عشان تشوفيه وتدخليه بالخطوة الجاية
     echo "<div style='font-family: Arial; padding: 20px; background: #e8f4fd; border: 1px solid #b6e0fe; margin: 20px;'>";
     echo "<h3>Test Mode - OTP Generated Successfully!</h3>";
     echo "<p>Your OTP Code for <b>$email</b> is: <span style='font-size: 24px; color: #d9534f;'><b>$otp</b></span></p>";
@@ -50,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- فورم HTML بسيط للتسجيل -->
 <form method="POST">
     <h2>Register</h2>
     <input type="text" name="full_name" placeholder="Full Name" required><br><br>
