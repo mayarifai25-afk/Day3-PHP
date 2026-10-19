@@ -3,7 +3,7 @@
 
 class DB {
     private $host = 'localhost';
-    private $dbname = 'trading_pos'; // اسم قاعدة البيانات عندك
+    private $dbname = 'trading_pos'; 
     private $username = 'root';
     private $password = '';
     private $pdo;
