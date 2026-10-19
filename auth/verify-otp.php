@@ -33,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Invalid verification code.");
     }
 
-    // تفعيل الحساب بنجاح
     $pdo->beginTransaction();
     try {
         $pdo->prepare("UPDATE users SET email_verified = 1, status = 'active' WHERE user_id = :id")
@@ -50,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- فورم HTML لإدخال الرمز -->
 <form method="POST">
     <h2>Verify OTP</h2>
     <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
