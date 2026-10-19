@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Invalid login code.");
     }
 
-    // نجاح التحقق
     $pdo->beginTransaction();
     try {
         reset_otp_fields($pdo, $userId);
